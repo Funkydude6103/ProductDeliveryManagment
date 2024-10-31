@@ -60,10 +60,6 @@ The aim of this project is to create a **basic product management application** 
     </video>
 </div>
 
-## 🎯 Future Enhancements
-- Add product search and filtering options.
-- Implement product category management.
-
 ---
 
 Made with ❤ by **Tayyab Anees**.
