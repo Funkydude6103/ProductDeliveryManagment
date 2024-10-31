@@ -26,6 +26,8 @@ public class NewOrderFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static ArrayList<Product> products=new ArrayList<Product>();
+    public static ProductAdapter adapter=null;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -83,10 +85,15 @@ public class NewOrderFragment extends Fragment {
         ListView lvNewOrderList = view.findViewById(R.id.lvNewOrdersList);
         ProductDB productDB = new ProductDB(context);
         productDB.open();
-        ArrayList<Product> products = productDB.fetchProducts();
+        products = productDB.fetchProducts("new");
         productDB.close();
-
-        ProductAdapter adapter = new ProductAdapter(context, R.layout.product_item_design, products);
+        adapter = new ProductAdapter(context, R.layout.product_item_design, products);
         lvNewOrderList.setAdapter(adapter);
+    }
+
+    public static void updateProductList() {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged(); // Notify the adapter of the change
+        }
     }
 }

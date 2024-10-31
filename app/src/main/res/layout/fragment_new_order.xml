@@ -12,6 +12,8 @@
         android:gravity="center"
         android:textSize="20sp"
         android:id="@+id/lvNewOrdersList"
+        android:paddingBottom="56dp"
+        android:clipToPadding="false"
         />
 
 </FrameLayout>

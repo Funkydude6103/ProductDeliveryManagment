@@ -1,16 +1,22 @@
 package com.example.navigation_smd_7a;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link DeliveredFragment#newInstance} factory method to
+ * Use the {@link ScheduleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class DeliveredFragment extends Fragment {
@@ -23,10 +29,19 @@ public class DeliveredFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    public static ArrayList<Product> products=new ArrayList<Product>();
+    public static ProductDeliverAdapter adapter=null;
+    Context context;
 
     public DeliveredFragment() {
         // Required empty public constructor
     }
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
 
     /**
      * Use this factory method to create a new instance of
@@ -34,11 +49,11 @@ public class DeliveredFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment DeliveredFragment.
+     * @return A new instance of fragment ScheduleFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DeliveredFragment newInstance(String param1, String param2) {
-        DeliveredFragment fragment = new DeliveredFragment();
+    public static ScheduleFragment newInstance(String param1, String param2) {
+        ScheduleFragment fragment = new ScheduleFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -60,5 +75,32 @@ public class DeliveredFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_delivered, container, false);
+    }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ListView lvNewOrderList = view.findViewById(R.id.lvDeliveredList);
+        ProductDB productDB = new ProductDB(context);
+        productDB.open();
+        products = productDB.fetchProducts("deliver");
+        productDB.close();
+        adapter = new ProductDeliverAdapter(context, R.layout.product_item_design_deliver, products);
+        lvNewOrderList.setAdapter(adapter);
+    }
+
+    public static void updateProductList() {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged(); // Notify the adapter of the change
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        ProductDB db = new ProductDB(context);
+        db.open();
+        DeliveredFragment.products.clear();
+        DeliveredFragment.products.addAll(db.fetchProducts("deliver"));
+        db.close();
+        adapter.notifyDataSetChanged();
     }
 }

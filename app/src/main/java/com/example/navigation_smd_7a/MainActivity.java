@@ -1,9 +1,11 @@
 package com.example.navigation_smd_7a;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,6 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
 
     TabLayout tabLayout;
@@ -28,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     ViewPagerAdapter adapter;
     int count=0;
     boolean flag = false;
-
     FloatingActionButton fab_add;
 
     @Override
@@ -51,13 +54,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
-                dialog.setTitle("Product");
+                dialog.setTitle("Add Product");
                 View v = LayoutInflater.from(MainActivity.this)
                         .inflate(R.layout.add_new_product_dialog_design, null, false);
                 dialog.setView(v);
                 EditText etTitle = v.findViewById(R.id.etTitle);
                 EditText etDate = v.findViewById(R.id.etDate);
                 EditText etPrice = v.findViewById(R.id.etPrice);
+                etDate.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Calendar calendar = Calendar.getInstance();
+                        int year = calendar.get(Calendar.YEAR);
+                        int month = calendar.get(Calendar.MONTH);
+                        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                                MainActivity.this,
+                                new DatePickerDialog.OnDateSetListener() {
+                                    @Override
+                                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                        etDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+                                    }
+                                }, year, month, day);
+                        datePickerDialog.show();
+                    }
+                });
 
                 dialog.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
@@ -65,10 +87,17 @@ public class MainActivity extends AppCompatActivity {
                         String title = etTitle.getText().toString().trim();
                         String date = etDate.getText().toString().trim();
                         String price = etPrice.getText().toString();
-
+                        if(title.isEmpty() || date.isEmpty() || price.isEmpty())
+                        {
+                            Toast.makeText(MainActivity.this, "Product Add Failed", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         ProductDB productDB = new ProductDB(MainActivity.this);
                         productDB.open();
                         productDB.insert(title, date, Integer.parseInt(price));
+                        NewOrderFragment.products.clear();
+                        NewOrderFragment.products.addAll(productDB.fetchProducts("new"));
+                        NewOrderFragment.updateProductList();
                         productDB.close();
                         Toast.makeText(MainActivity.this, "Product Added", Toast.LENGTH_SHORT).show();
 
@@ -81,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+
+                dialog.show();
 
 
             }
@@ -96,10 +127,6 @@ public class MainActivity extends AppCompatActivity {
                             case 0:
                                 tab.setText("Scheduled");
                                 tab.setIcon(R.drawable.schedule_icon);
-                                BadgeDrawable badgeDrawable = tab.getOrCreateBadge();
-                                badgeDrawable.setNumber(count);
-                                badgeDrawable.setMaxCharacterCount(2);
-                                badgeDrawable.setVisible(true);
                                 break;
                             case 1:
                                 tab.setText("Delivered");
@@ -112,30 +139,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         tabLayoutMediator.attach();
-
-        vp2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                super.onPageSelected(position);
-                TabLayout.Tab selectedTab = tabLayout.getTabAt(position);
-//                count++;
-                BadgeDrawable badgeDrawable = selectedTab.getBadge();
-                if(badgeDrawable != null)
-                {
-                    count=0;
-                    badgeDrawable.setNumber(count);
-                    if(!flag)
-                        flag=true;
-                    else
-                        badgeDrawable.setVisible(false);
-                }
-
-
-//                   badgeDrawable.setNumber(count);
-
-
-            }
-        });
 
     }
 }

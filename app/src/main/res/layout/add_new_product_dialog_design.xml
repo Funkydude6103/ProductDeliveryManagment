@@ -5,51 +5,58 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center"
-        android:text="New Product"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="@string/new_product"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
     <EditText
         android:id="@+id/etTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:ems="10"
-        android:hint="Enter Title"
-        android:inputType="text" />
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:background="@drawable/rounded_edittext_bg"
+        android:hint="@string/enter_title"
+        android:inputType="text"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        />
 
     <EditText
         android:id="@+id/etDate"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:ems="10"
-        android:hint="Date"
-        android:inputType="date" />
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:background="@drawable/rounded_edittext_bg"
+        android:hint="@string/date"
+        android:focusable="false"
+        android:clickable="true"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+         />
 
     <EditText
         android:id="@+id/etPrice"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:ems="10"
-        android:hint="Price"
-        android:inputType="numberSigned" />
+        android:layout_height="50dp"
+        android:layout_marginBottom="16dp"
+        android:padding="12dp"
+        android:background="@drawable/rounded_edittext_bg"
+        android:hint="@string/price"
+        android:inputType="numberSigned"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        />
 
 </LinearLayout>

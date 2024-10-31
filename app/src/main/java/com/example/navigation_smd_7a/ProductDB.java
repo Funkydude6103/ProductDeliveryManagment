@@ -62,23 +62,38 @@ public class ProductDB {
         cv.put(KEY_PRICE, price);
         return db.update(DATABASE_TABLE_NAME, cv, KEY_ID+"=?", new String[]{id+""});
     }
+    public int update(int id, String title, String date, int price,String status) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(KEY_TITLE, title);
+        cv.put(KEY_DATE, date);
+        cv.put(KEY_PRICE, price);
+        cv.put(KEY_STATUS,status);
 
-    public ArrayList<Product> fetchProducts()
+        return db.update(DATABASE_TABLE_NAME, cv, KEY_ID + "=?", new String[]{String.valueOf(id)});
+    }
+
+
+    public ArrayList<Product> fetchProducts(String status)
     {
         SQLiteDatabase readDb = dbHelper.getReadableDatabase();
         ArrayList<Product> products = new ArrayList<>();
-        String []columns = new String[]{KEY_ID, KEY_TITLE, KEY_DATE, KEY_PRICE};
+        String []columns = new String[]{KEY_ID, KEY_TITLE, KEY_DATE, KEY_PRICE,KEY_STATUS};
+        // Adding WHERE clause to filter by status
+        String selection = KEY_STATUS + " = ?";
+        String[] selectionArgs = new String[]{status};
 
-        Cursor cursor = readDb.query(DATABASE_TABLE_NAME, columns, null, null, null, null, null);
+        Cursor cursor = readDb.query(DATABASE_TABLE_NAME, columns, selection, selectionArgs,null, null, null);
         if(cursor!=null) {
 
             int id_index = cursor.getColumnIndex(KEY_ID);
             int title_index = cursor.getColumnIndex(KEY_TITLE);
             int date_index = cursor.getColumnIndex(KEY_DATE);
             int price_index = cursor.getColumnIndex(KEY_PRICE);
+            int status_index = cursor.getColumnIndex(KEY_STATUS);
             while (cursor.moveToNext()) {
                 Product p = new Product(cursor.getInt(id_index), cursor.getString(title_index), cursor.getString(date_index),
-                        cursor.getInt(price_index), "");
+                        cursor.getInt(price_index), cursor.getString(status_index));
                 products.add(p);
             }
             cursor.close();
@@ -106,7 +121,7 @@ public class ProductDB {
             );
              */
             String query = "CREATE TABLE IF NOT EXISTS "+DATABASE_TABLE_NAME+"("+KEY_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"
-                    +KEY_TITLE+" TEXT NOT NULL,"+KEY_DATE+" TEXT NOT NULL,"+KEY_PRICE+" INTEGER, " +KEY_STATUS +");";
+                    +KEY_TITLE+" TEXT NOT NULL,"+KEY_DATE+" TEXT NOT NULL,"+KEY_PRICE+" INTEGER, " +KEY_STATUS +"TEXT"+");";
             sqLiteDatabase.execSQL(query);
         }
 
